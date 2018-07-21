@@ -1,0 +1,172 @@
+#+TITLE: RJ Russell's Emacs Configuration
+#+STARTUP: overview
+
+* Add Org Repo and custom.el
+#+BEGIN_SRC emacs-lisp
+(unless (assoc-default "org" package-archives)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+#+END_SRC
+
+* THEME
+#+BEGIN_SRC emacs-lisp
+(use-package doom-themes
+  :ensure t
+  :config (load-theme 'doom-molokai)
+  )
+#+END_SRC
+
+* MISC INTERFACE TWEAKS
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+(tool-bar-mode -1)
+(toggle-scroll-bar -1)
+(fset 'yes-or-no-p 'y-or-n-p)
+(global-display-line-numbers-mode t)
+
+(setq make-backup-files nil) ; stop creating backup ~ files
+(setq auto-save-default nil) ; stop creating #autosave# files
+
+(set-face-attribute 'default nil
+            :family "Iosevka"
+            :height 120
+            :weight 'normal
+            :width 'normal)
+
+(global-hl-line-mode)
+
+(defalias 'list-buffers 'ibuffer)
+#+END_SRC
+* CUSTOM KEYBIND CONFIGS/CHANGES
+#+BEGIN_SRC emacs-lisp
+  (global-unset-key (kbd "ESC ESC ESC"))
+#+END_SRC
+* TRY
+#+BEGIN_SRC emacs-lisp
+(use-package try
+  :ensure t)
+#+END_SRC
+
+* WHICH-KEY
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
+#+END_SRC
+
+* ORG-BULLETS
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+END_SRC
+
+* ACE-WINDOW
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window
+  :ensure t
+  :init
+  (progn
+    (global-set-key [remap other-window] 'ace-window)
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 2.0)))))
+    ))
+#+END_SRC
+
+* COUNSEL
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :ensure t
+  )
+#+END_SRC
+
+* IVY
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :ensure t
+  :diminish (ivy-mode)
+  :bind (("C-x b" . ivy-switch-buffer))
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-display-style 'fancy))
+#+END_SRC
+
+* SWIPER
+#+BEGIN_SRC emacs-lisp
+(use-package swiper
+  :ensure t
+  :bind (("C-s" . swiper)
+     ("C-r" . swiper)
+     ("C-c C-r" . ivy-resume)
+     ("M-x" . counsel-M-x)
+     ("C-x C-f" . counsel-find-file))
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+#+END_SRC
+
+* AUTO-COMPLETE
+#+BEGIN_SRC emacs-lisp
+(use-package auto-complete
+  :ensure t
+  :init
+  (progn
+    (ac-config-default)
+    (global-auto-complete-mode t)
+    ))
+#+END_SRC
+
+* SMARTPARENS
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :ensure t
+    :diminish smartparens-mode
+    :config
+    (progn
+      (require 'smartparens-config)
+      (smartparens-global-mode 1))
+    )
+#+END_SRC
+
+* RAINBOW DELIMITERS
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    )
+#+END_SRC
+* AGGRESSIVE INDENT MODE
+#+BEGIN_SRC emacs-lisp
+  (use-package aggressive-indent
+    :ensure t
+    :config
+    (global-aggressive-indent-mode 1))
+#+END_SRC
+* CLOJURE PACKAGES
+** CLOJURE-MODE
+#+BEGIN_SRC emacs-lisp
+  (use-package clojure-mode
+    :ensure t
+    :config
+    (add-hook 'clojure-mode-hook #'smartparens-mode)
+    (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+    (add-hook 'clojure-mode-hook #'aggressive-indent-mode))
+#+END_SRC
+** CIDER
+#+BEGIN_SRC emacs-lisp
+  (use-package cider
+    :ensure t
+    :config
+    (setq nrepl-log-messages t)
+    (add-hook 'cider-mode-hook #'smartparens-mode)
+  )
+#+END_SRC
+
