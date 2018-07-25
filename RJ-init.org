@@ -26,6 +26,8 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (global-display-line-numbers-mode t)
 
+(windmove-default-keybindings) ; move windows around
+
 (setq make-backup-files nil) ; stop creating backup ~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
 
@@ -42,6 +44,7 @@
 * CUSTOM KEYBIND CONFIGS/CHANGES
 #+BEGIN_SRC emacs-lisp
   (global-unset-key (kbd "ESC ESC ESC"))
+  (global-auto-revert-mode t)
 #+END_SRC
 * TRY
 #+BEGIN_SRC emacs-lisp
@@ -149,6 +152,31 @@
     :ensure t
     :config
     (global-aggressive-indent-mode 1))
+#+END_SRC
+* MAGIT
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :config
+    (global-set-key (kbd "C-x g") 'magit-status))
+#+END_SRC
+* EVIL
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+    :ensure t
+    :config
+    (evil-mode 1))
+#+END_SRC
+* PROJECTILE
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :diminish projectile-mode
+    :init
+    (setq projectile-completion-system 'ivy)
+    :config
+    (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+    (projectile-mode))
 #+END_SRC
 * CLOJURE PACKAGES
 ** CLOJURE-MODE

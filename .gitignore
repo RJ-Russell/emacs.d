@@ -6,3 +6,5 @@ RJ-init.el
 ac-comphist.dat
 custom.el
 recentf
+
+**/*.desktop
