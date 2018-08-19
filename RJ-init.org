@@ -1,4 +1,4 @@
-#+TITLE: RJ Russell's Emacs Configuration
+#+TITLE: Emacs Configuration
 #+STARTUP: overview
 
 * Add Org Repo and custom.el
@@ -16,6 +16,12 @@
   :ensure t
   :config (load-theme 'doom-molokai)
   )
+
+(setq evil-emacs-state-cursor  '("orange" box))
+(setq evil-normal-state-cursor '("#b2e8c2" box))
+(setq evil-visual-state-cursor '("violet" box))
+(setq evil-insert-state-cursor '("#b2e8c2" bar))
+(setq evil-motion-state-cursor '("gray" box))
 #+END_SRC
 
 * MISC INTERFACE TWEAKS
@@ -41,10 +47,11 @@
 
 (defalias 'list-buffers 'ibuffer)
 #+END_SRC
-* CUSTOM KEYBIND CONFIGS/CHANGES
+* INDEPENDENT CUSTOM KEYBIND CONFIGS/CHANGES
 #+BEGIN_SRC emacs-lisp
   (global-unset-key (kbd "ESC ESC ESC"))
   (global-auto-revert-mode t)
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+END_SRC
 * TRY
 #+BEGIN_SRC emacs-lisp
@@ -54,9 +61,31 @@
 
 * WHICH-KEY
 #+BEGIN_SRC emacs-lisp
-(use-package which-key
-  :ensure t
-  :config (which-key-mode))
+  (use-package which-key
+    :ensure t
+    :init
+    (which-key-mode)
+    :config
+    (which-key-setup-side-window-right-bottom)
+    (setq which-key-sort-order 'which-key-key-order-alpha
+	  which-key-idle-delay 0.5)
+    :diminish 
+    which-key-mode)
+#+END_SRC
+
+* GENERAL
+#+BEGIN_SRC emacs-lisp
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup t)
+
+    (general-define-key
+     :states '(normal)
+     :prefix "SPC"
+     "l" '(comint-clear-buffer :which-key "clear buffer")
+     "g" '(:ignore t :which-key "Git")
+     "gs" '(magit-status :which-key "git status")))
 #+END_SRC
 
 * ORG-BULLETS
@@ -91,10 +120,10 @@
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :ensure t
-  :diminish (ivy-mode)
+  :diminish (ivy-mode . "")
+  :init (ivy-mode 1)
   :bind (("C-x b" . ivy-switch-buffer))
   :config
-  (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
   (setq ivy-display-style 'fancy))
 #+END_SRC
@@ -165,7 +194,9 @@
   (use-package evil
     :ensure t
     :config
-    (evil-mode 1))
+    (evil-mode 1)
+    (evil-set-initial-state 'cider-repl-mode 'emacs)
+    (evil-set-initial-state 'cider-stacktrace-mode 'emacs))
 #+END_SRC
 * PROJECTILE
 #+BEGIN_SRC emacs-lisp
